@@ -1,26 +1,15 @@
-use std::net::{TcpListener, TcpStream};
+use std::net::TcpListener;
 
-const CONNECTION_ADDR: &str = "localhost";
-const CONNECTION_PORT: u16 = 1337;
-
-fn handle_stream(stream: TcpStream) {
-    let addr = stream.peer_addr();
-
-    if let Ok(addr) = addr {
-        let port = addr.port();
-
-        println!("Connection from port: {}", port)
-    }
-}
+extern crate network;
 
 fn main() -> std::io::Result<()> {
-    let addr_format = format!("{}:{}", CONNECTION_ADDR, CONNECTION_PORT);
+    let addr_format = "localhost:1337";
 
     let listener = TcpListener::bind(addr_format)?;
 
     for stream in listener.incoming() {
         match stream {
-            Ok(stream) => handle_stream(stream),
+            Ok(stream) => network::network::server::handle_stream(stream),
 
             Err(e) => panic!("{}", e),
         }
