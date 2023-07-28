@@ -3,17 +3,19 @@ use std::net::TcpListener;
 extern crate network;
 
 fn main() -> std::io::Result<()> {
-    let addr_format = "localhost:1337";
+    let addr = "localhost:1337";
 
-    let listener = TcpListener::bind(addr_format)?;
+    let listener = TcpListener::bind(addr)?;
 
-    for stream in listener.incoming() {
-        match stream {
-            Ok(stream) => network::network::server::handle_stream(stream),
+    loop {
+        let _ = network::network::client::connect(addr);
 
-            Err(e) => panic!("{}", e),
+        for stream in listener.incoming() {
+            match stream {
+                Ok(stream) => network::network::server::handle_stream(stream),
+
+                Err(e) => panic!("{}", e),
+            }
         }
     }
-
-    Ok(())
 }
